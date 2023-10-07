@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Keyboard Sound</title>
+</head>
+<body>
+    <script>
+        // Define the audio context
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        // Create an object to store different sounds
+        const sounds = {
+            'a': 'path-to-sound-a.mp3',
+            's': 'path-to-sound-s.mp3',
+            'd': 'path-to-sound-d.mp3',
+            // Add more key-sound mappings as needed
+        };
+
+        // Function to play a sound for a specific key
+        function playSound(key) {
+            if (sounds[key]) {
+                fetch(sounds[key])
+                    .then(response => response.arrayBuffer())
+                    .then(data => audioContext.decodeAudioData(data))
+                    .then(buffer => {
+                        const source = audioContext.createBufferSource();
+                        source.buffer = buffer;
+                        source.connect(audioContext.destination);
+                        source.start();
+                    })
+                    .catch(error => {
+                        console.error('Error loading sound:', error);
+                    });
+            }
+        }
+
+        // Event listener to play sound when a key is pressed
+        document.addEventListener('keydown', (event) => {
+            const key = event.key.toLowerCase();
+            playSound(key);
+        });
+    </script>
+</body>
+</html>
